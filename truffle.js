@@ -1,11 +1,14 @@
 var HDWalletProvider = require("@truffle/hdwallet-provider");
-var mnemonic = "candy maple cake sugar pudding cream honey rich smooth crumble sweet treat";
+var mnemonic = "";
 
 module.exports = {
   networks: {
     development: {
       provider: function() {
-        return new HDWalletProvider(mnemonic, "http://127.0.0.1:9545/", 0, 50);
+        return new HDWalletProvider({
+              mnemonic: mnemonic, 
+              providerOrUrl: "http://127.0.0.1:9545/", 
+              numberOfAddresses: 10});
       },
       network_id: '*',
       gas: 9999999
