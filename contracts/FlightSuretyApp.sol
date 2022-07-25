@@ -12,10 +12,11 @@ contract FlightSuretyApp {
     using SafeMath for uint256; // Allow SafeMath functions to be called for all uint256 types (similar to "prototype" in Javascript)
 
     /********************************************************************************************/
-    /*                                       DATA VARIABLES                                     */
+    /*                                       APP CONSTANTS                                      */
     /********************************************************************************************/
+    uint256 public constant MINIMUM_REGISTRATION_AMOUNT = 10 ether;  //Min required registration fee for new arilines
 
-    // Flight status codees
+    // Flight status codes
     uint8 private constant STATUS_CODE_UNKNOWN = 0;
     uint8 private constant STATUS_CODE_ON_TIME = 10;
     uint8 private constant STATUS_CODE_LATE_AIRLINE = 20;
@@ -23,7 +24,10 @@ contract FlightSuretyApp {
     uint8 private constant STATUS_CODE_LATE_TECHNICAL = 40;
     uint8 private constant STATUS_CODE_LATE_OTHER = 50;
 
-    address private contractOwner;          // Account used to deploy contract
+    /********************************************************************************************/
+    /*                                       APP VARIABLES                                      */
+    /********************************************************************************************/
+    address private contractOwner;                                   // Account used to deploy contract
 
     struct Flight {
         bool isRegistered;
