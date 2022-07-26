@@ -14,7 +14,6 @@ contract FlightSuretyApp {
     /********************************************************************************************/
     /*                                       APP CONSTANTS                                      */
     /********************************************************************************************/
-    uint256 public constant MINIMUM_REGISTRATION_AMOUNT = 10 ether;  //Min required registration fee for new arilines
 
     // Flight status codes
     uint8 private constant STATUS_CODE_UNKNOWN = 0;
@@ -27,6 +26,8 @@ contract FlightSuretyApp {
     /********************************************************************************************/
     /*                                       APP VARIABLES                                      */
     /********************************************************************************************/
+    //Data contract declaration
+    FlightSuretyData flightSuretyData;
     address private contractOwner;                                   // Account used to deploy contract
 
     struct Flight {
@@ -35,8 +36,12 @@ contract FlightSuretyApp {
         uint256 updatedTimestamp;        
         address airline;
     }
+
+    //Flights list
     mapping(bytes32 => Flight) private flights;
 
+    //Track voters
+    mapping(address => address[]) private voters;
  
     /********************************************************************************************/
     /*                                       FUNCTION MODIFIERS                                 */
@@ -66,6 +71,22 @@ contract FlightSuretyApp {
         _;
     }
 
+    /**
+    * @dev Prevents an airline to be voted twice
+    */
+    modifier requireNotVoted(address caller) {
+        require(!isVoted(voters[caller]), "Airline was already voted.");
+        _;
+    }
+
+    /**
+    * @dev Checks if airline is funded
+    */
+    modifier requireFunded() {
+        require(flightSuretyData.isFunded(msg.sender), "Airline is not funded.");
+        _;
+    }
+
     /********************************************************************************************/
     /*                                       CONSTRUCTOR                                        */
     /********************************************************************************************/
@@ -76,10 +97,13 @@ contract FlightSuretyApp {
     */
     constructor
                                 (
+                                    address dataContract
                                 ) 
                                 public 
     {
         contractOwner = msg.sender;
+        //Data contract instantiation
+        flightSuretyData = FlightSuretyData(dataContract);
     }
 
     /********************************************************************************************/
@@ -88,11 +112,21 @@ contract FlightSuretyApp {
 
     function isOperational() 
                             public 
-                            pure 
+                            view 
                             returns(bool) 
     {
-        return true;  // Modify to call data contract's status
+        return flightSuretyData.isOperational();  // Modify to call data contract's status
     }
+
+    //Check if an airline was already voted
+    function isVoted(address[] memory voters) internal view returns(bool){
+        for (uint256 i = 0; i < voters.length; i++) {
+            if (voters[i] == msg.sender) {
+                return true;
+            }
+        }
+        return false;
+    }    
 
     /********************************************************************************************/
     /*                                     SMART CONTRACT FUNCTIONS                             */
@@ -103,14 +137,20 @@ contract FlightSuretyApp {
     * @dev Add an airline to the registration queue
     *
     */   
-    function registerAirline
-                            (   
+    function registerAirline(
+                                address caller,
+                                string name
                             )
-                            external
-                            pure
-                            returns(bool success, uint256 votes)
+                            external                            
+                            requireIsOperational
+                            requireNotVoted(caller)
+                            returns(bool success)
     {
-        return (success, 0);
+        success = flightSuretyData.registerAirline(caller, name);
+        if(success) {
+            voters[caller].push(msg.sender);
+        }
+        return (success);
     }
 
 
@@ -118,11 +158,14 @@ contract FlightSuretyApp {
     * @dev Register a future flight for insuring.
     *
     */  
-    function registerFlight
-                                (
-                                )
+    function registerFlight(
+                                string  flight,
+                                string  destination,
+                                uint256 timestamp
+                            )
                                 external
-                                pure
+                                requireIsOperational
+                                requireFunded
     {
 
     }
@@ -337,4 +380,12 @@ contract FlightSuretyApp {
 
 // endregion
 
+}   
+
+// Data Contract interface
+contract FlightSuretyData {
+    function isOperational() public view returns(bool);    
+    function registerAirline(address caller, string name) external returns(bool);
+    function creditInsurees (string flight) external;
+    function isFunded (address caller) public view returns(bool);
 }   

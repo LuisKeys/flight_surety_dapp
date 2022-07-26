@@ -10,6 +10,7 @@ contract FlightSuretyData {
     /********************************************************************************************/
     uint8 private constant  MIN_VOTE_AIRLINES = 4;                   //Multy party voting/consensus N of M, with N = 4
     uint256 public constant MAXIMUM_INSURANCE_PRICE = 1 ether;       //Max insurance price
+    uint256 public constant MINIMUM_REGISTRATION_AMOUNT = 10 ether;  //Min required registration fee for new arilines
 
     /********************************************************************************************/
     /*                                       DATA VARIABLES                                     */
@@ -21,7 +22,7 @@ contract FlightSuretyData {
     mapping(address => Airline) private airlines;                    // List of registered airlines
     address[] private airlinesAddresses;                            // List of airlines addresses
     mapping(address => Passenger) private passengers;                // List of passengers
-    address[] private passengerAddresses;                            // List of passengers addresses
+    address[] private paxs;                            // List of passengers addresses
 
     struct Airline {
         string name;
@@ -29,6 +30,7 @@ contract FlightSuretyData {
         bool isRegistered;
         uint8 votesCount;
         address callerAddress;
+        uint256 fund;
     }
 
     struct Passenger {
@@ -60,7 +62,8 @@ contract FlightSuretyData {
                                             isFunded: false,
                                             isRegistered: true,
                                             votesCount: 0,
-                                            callerAddress: msg.sender
+                                            callerAddress: msg.sender,
+                                            fund: 0
                                     });        
         airlinesAddresses.push(msg.sender);
     }
@@ -202,8 +205,8 @@ contract FlightSuretyData {
     */    
     function isPassengerRegistered(address caller) internal view returns(bool registered){
         registered = false;
-        for (uint256 i = 0; i < passengerAddresses.length; i++) {
-            address passengerAddress = passengerAddresses[i];
+        for (uint256 i = 0; i < paxs.length; i++) {
+            address passengerAddress = paxs[i];
             if (passengerAddress == caller) {
                 registered = true;
                 break;
@@ -212,6 +215,10 @@ contract FlightSuretyData {
         return registered;
     }
 
+    function isFunded (address caller) public view returns(bool) {
+        return(airlines[caller].fund >= MINIMUM_REGISTRATION_AMOUNT);
+    }
+    
     /********************************************************************************************/
     /*                                     SMART CONTRACT FUNCTIONS                             */
     /********************************************************************************************/
@@ -226,6 +233,7 @@ contract FlightSuretyData {
                             requireIsOperational
                             requireIsAuthorizedCaller
                             requireIsNotAirlineRegistered(caller)
+                            returns(bool)
     {
         if(airlinesAddresses.length < MIN_VOTE_AIRLINES) {
             //While the min vote airlines number is not meet, no voting is required
@@ -234,13 +242,16 @@ contract FlightSuretyData {
                                         isFunded: false,
                                         isRegistered: true,
                                         votesCount: 1,
-                                        callerAddress: caller
+                                        callerAddress: caller,
+                                        fund: 0
                                     });   
             airlinesAddresses.push(caller);
+            return true;
         } else {
             //The min vote number was reached hence voting is required
             vote(caller);
-        }
+            return true;
+        }        
     }
 
    /**
@@ -277,7 +288,7 @@ contract FlightSuretyData {
                                                     credit: 0
                                                 });   
                 passengers[msg.sender].flights[flight] = msg.value;
-                passengerAddresses.push(msg.sender);
+                paxs.push(msg.sender);
             }        
         } else {
             //Passenger already in the list, only add the flight
@@ -294,10 +305,22 @@ contract FlightSuretyData {
     */
     function creditInsurees
                                 (
+                                    string flight
                                 )
                                 external
-                                pure
+                                requireIsOperational
     {
+        for (uint256 i = 0; i < paxs.length; i++) {
+            address caller = paxs[i];
+            if(passengers[caller].flights[flight] != 0) {
+                uint256 payment = passengers[caller].flights[flight];
+                uint256 credit = passengers[caller].credit;
+                passengers[caller].flights[flight] = 0;
+                //1.5 times payed back to the passenger if the ariline flight was delayed
+                uint256 payback = payment + payment.div(2);
+                passengers[caller].credit = credit + payback;
+            }
+        }
     }
     
 
@@ -323,7 +346,9 @@ contract FlightSuretyData {
                             )
                             public
                             payable
+                            requireIsOperational
     {
+        airlines[msg.sender].fund = airlines[msg.sender].fund.add(msg.value);
     }
 
     function getFlightKey
