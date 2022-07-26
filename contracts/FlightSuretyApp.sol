@@ -35,6 +35,7 @@ contract FlightSuretyApp {
         uint8 statusCode;
         uint256 updatedTimestamp;        
         address airline;
+        string flightCode;
     }
 
     //Flights list
@@ -143,10 +144,15 @@ contract FlightSuretyApp {
                             )
                             external                            
                             requireIsOperational
+                            requireFunded
                             requireNotVoted(caller)
                             returns(bool success)
     {
+
+        //Call the registration method of the data contract to register the airline
         success = flightSuretyData.registerAirline(caller, name);
+
+        //In case it is ok, it update the voters.
         if(success) {
             voters[caller].push(msg.sender);
         }
@@ -160,14 +166,24 @@ contract FlightSuretyApp {
     */  
     function registerFlight(
                                 string  flight,
-                                string  destination,
                                 uint256 timestamp
                             )
                                 external
                                 requireIsOperational
                                 requireFunded
     {
+        //Check if the flight was registered
+        bytes32 key = keccak256(abi.encodePacked(flight, msg.sender));
+        require(!flights[key].isRegistered, "Flight is registered.");
 
+        //Add the new flight
+        flights[key] = Flight({
+                                        isRegistered: true,
+                                        statusCode: STATUS_CODE_UNKNOWN,                                        
+                                        updatedTimestamp: timestamp,
+                                        airline: msg.sender,
+                                        flightCode: flight
+                                });
     }
     
    /**
@@ -182,8 +198,20 @@ contract FlightSuretyApp {
                                     uint8 statusCode
                                 )
                                 internal
-                                pure
+                                requireIsOperational
     {
+        //Check if the flight was registered
+        bytes32 key = keccak256(abi.encodePacked(flight, airline));
+        require(flights[key].isRegistered, "Flight is not registered.");
+
+        //Update flight status
+        flights[key].updatedTimestamp = timestamp;
+        flights[key].statusCode = statusCode;
+
+        //credit passengers in case it is delayed by the airline
+        if (statusCode == STATUS_CODE_LATE_AIRLINE) {
+            flightSuretyData.creditInsurees(flight);
+        }
     }
 
 
