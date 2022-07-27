@@ -61,7 +61,7 @@ contract FlightSuretyData {
                                             isRegistered: true,
                                             votesCount: 0,
                                             callerAddress: msg.sender,
-                                            fund: 10 ether
+                                            fund: MINIMUM_REGISTRATION_AMOUNT
                                     });        
         airlinesAddresses.push(msg.sender);
     }
@@ -187,15 +187,13 @@ contract FlightSuretyData {
     * @dev Checks if the passenger was already added to the passengers list
     */    
     function isAirlineRegistered(address caller) internal view returns(bool registered){
-        registered = false;
         for (uint256 i = 0; i < airlinesAddresses.length; i++) {
             address airlinesAddress = airlinesAddresses[i];
             if (airlinesAddress == caller) {
-                registered = true;
-                break;
+                return true;
             }
         }
-        return registered;
+        return false;
     }
 
     /**
@@ -276,7 +274,7 @@ contract FlightSuretyData {
                                         isRegistered: true,
                                         votesCount: 1,
                                         callerAddress: caller,
-                                        fund: 0
+                                        fund: MINIMUM_REGISTRATION_AMOUNT
                                     });   
             airlinesAddresses.push(caller);
             return true;

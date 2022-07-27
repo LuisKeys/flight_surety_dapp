@@ -90,5 +90,30 @@ contract('Flight Surety Tests', async (accounts) => {
     let result = await config.flightSuretyData.registerAirline(airline, {from: config.firstAirline});
     result = await config.flightSuretyData.isAirline.call(airline); 
     assert.equal(result, true, "Only funded airline can registrer a new airline");
+    let airlinesRegistered = await config.flightSuretyData.airlinesRegistered.call(); 
+    assert.equal(airlinesRegistered, 2, "2 airlines should be registered at this poitn (seed and the second one).");
   });
+
+  it("While registered count is <= 4 no additional consensus is required", async () => {
+
+    let airlinesRegistered = await config.flightSuretyData.airlinesRegistered.call(); 
+    await config.flightSuretyApp.registerAirline(accounts[3], "Great Skies Domestic", {from: accounts[0]});
+    await config.flightSuretyApp.registerAirline(accounts[4], "New Skies International", {from: accounts[0]});
+    airlinesRegistered = await config.flightSuretyData.airlinesRegistered.call(); 
+
+    assert.equal(airlinesRegistered, 4, "4 airlines are required to check condition.");
+  });
+
+    it("Once registered count is >= 4, then 50% votes are required to register a new one", async () => {
+
+        airlinesRegistered = await config.flightSuretyData.airlinesRegistered.call(); 
+        assert.equal(airlinesRegistered, 4, "4 airlines are required at this point.");
+
+        await config.flightSuretyApp.registerAirline(accounts[5], "dummy airline 3 name", {from: accounts[2]});
+        let result = await config.flightSuretyData.isAirline.call(accounts[5]);
+        let airlinesCount = await config.flightSuretyData.airlinesRegistered.call(); 
+    
+        assert.equal(airlinesCount, 4, "Airlines count should be 4, this one should not be registered due to missing 50% of voters.");
+      });
+    
 });
