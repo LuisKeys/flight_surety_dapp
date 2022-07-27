@@ -26,7 +26,6 @@ contract FlightSuretyData {
 
     struct Airline {
         string name;
-        bool isFunded;
         bool isRegistered;
         uint8 votesCount;
         address callerAddress;
@@ -59,7 +58,6 @@ contract FlightSuretyData {
         // 	First airline is registered when contract is deployed.
         airlines[msg.sender] = Airline({
                                             name: "Fun Seed Airlines",
-                                            isFunded: false,
                                             isRegistered: true,
                                             votesCount: 0,
                                             callerAddress: msg.sender,
@@ -215,10 +213,35 @@ contract FlightSuretyData {
         return registered;
     }
 
+    /**
+    * @dev Checks if the airline is funded
+    */    
     function isFunded (address caller) public view returns(bool) {
         return(airlines[caller].fund >= MINIMUM_REGISTRATION_AMOUNT);
     }
     
+    /**
+    * @dev Checks if the caller is authorized
+    */    
+    function isAuthorized (address caller)
+                            external
+                            view
+                            returns(bool)
+    {
+        return(authorizedCallers[caller]);
+    }
+
+    /**
+    * @dev Checks if the caller is authorized
+    */    
+    function isAirline (address caller)
+                        external
+                        view
+                        returns (bool) 
+    {
+        return airlines[caller].callerAddress == caller;
+    }
+
     /********************************************************************************************/
     /*                                     SMART CONTRACT FUNCTIONS                             */
     /********************************************************************************************/
@@ -239,7 +262,6 @@ contract FlightSuretyData {
             //While the min vote airlines number is not meet, no voting is required
             airlines[caller] = Airline({
                                         name: name,
-                                        isFunded: false,
                                         isRegistered: true,
                                         votesCount: 1,
                                         callerAddress: caller,
