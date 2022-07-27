@@ -79,24 +79,16 @@ contract('Flight Surety Tests', async (accounts) => {
 
   });
 
-  it('(airline) cannot register an Airline using registerAirline() if it is not funded', async () => {
-    
-    // ARRANGE
-    let newAirline = accounts[2];
-
-    // ACT
-    try {
-        await config.flightSuretyApp.registerAirline(newAirline, {from: config.firstAirline});
-    }
-    catch(e) {
-
-    }
-    let result = await config.flightSuretyData.isAirline.call(newAirline); 
-
-    // ASSERT
-    assert.equal(result, false, "Airline should not be able to register another airline if it hasn't provided funding");
-
+  it('Contract owner is one airline', async () => {
+    let airlinesCount = await config.flightSuretyData.airlinesRegistered.call(); 
+    assert.equal(airlinesCount, 1, "One airline expected to deploy the contract.");
   });
- 
 
+  it('Airline registgration: fund check', async () => {
+    
+    let airline = accounts[2];
+    let result = await config.flightSuretyData.registerAirline(airline, {from: config.firstAirline});
+    result = await config.flightSuretyData.isAirline.call(airline); 
+    assert.equal(result, true, "Only funded airline can registrer a new airline");
+  });
 });

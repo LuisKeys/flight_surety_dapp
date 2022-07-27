@@ -61,7 +61,7 @@ contract FlightSuretyData {
                                             isRegistered: true,
                                             votesCount: 0,
                                             callerAddress: msg.sender,
-                                            fund: 0
+                                            fund: 10 ether
                                     });        
         airlinesAddresses.push(msg.sender);
     }
@@ -242,6 +242,17 @@ contract FlightSuretyData {
         return airlines[caller].callerAddress == caller;
     }
 
+    /**
+    * @dev Return number of registered airlines
+    */    
+    function airlinesRegistered ()
+                        external
+                        view
+                        returns (uint256) 
+    {
+        return airlinesAddresses.length;
+    }
+    
     /********************************************************************************************/
     /*                                     SMART CONTRACT FUNCTIONS                             */
     /********************************************************************************************/
