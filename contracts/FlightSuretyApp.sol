@@ -76,7 +76,7 @@ contract FlightSuretyApp {
     * @dev Prevents an airline to be voted twice
     */
     modifier requireNotVoted(address caller) {
-        require(!isVoted(voters[caller]), "Airline was already voted.");
+        require(!isVoted(caller), "Airline was already voted.");
         _;
     }
 
@@ -120,9 +120,10 @@ contract FlightSuretyApp {
     }
 
     //Check if an airline was already voted
-    function isVoted(address[] memory voters) internal view returns(bool){
-        for (uint256 i = 0; i < voters.length; i++) {
-            if (voters[i] == msg.sender) {
+    function isVoted(address caller) internal view returns(bool){
+        
+        for (uint256 i = 0; i < voters[caller].length; i++) {
+            if (voters[caller][i] == msg.sender) {
                 return true;
             }
         }
