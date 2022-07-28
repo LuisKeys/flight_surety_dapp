@@ -4,6 +4,7 @@ var BigNumber = require('bignumber.js');
 
 contract('Flight Surety Tests', async (accounts) => {
 
+  const FLIGHT_CODE = "FSADL1358"
   var config;
   before('setup contract', async () => {
     config = await Test.Config(accounts);
@@ -118,8 +119,14 @@ contract('Flight Surety Tests', async (accounts) => {
 
     it('Checks flight registration ', async () => {
         timestamp = Math.floor(Date.now() / 1000); //convert ms to seconds
-        await config.flightSuretyApp.registerFlight("FSADL1358", timestamp, {from: accounts[2]});
-        //await config.flightSuretyApp.fetchFlightStatus(config.firstAirline, "FSADL1358", timestamp, {from: config.firstPassenger}); 
+        await config.flightSuretyApp.registerFlight(FLIGHT_CODE, timestamp, {from: accounts[2]});
+        await config.flightSuretyApp.fetchFlightStatus(config.firstAirline, FLIGHT_CODE, timestamp, {from: config.firstPassenger}); 
     });      
     
+    it("Checks passenger buy a flight", async () => {
+        let maxInsurancePrice = await config.flightSuretyData.MAXIMUM_INSURANCE_PRICE.call();
+        await config.flightSuretyData.buy(FLIGHT_CODE, {from: config.firstPassenger, value: maxInsurancePrice});
+        let passenger = await config.flightSuretyData.getPax.call(0); 
+        assert.equal(passenger, config.firstPassenger, "Passenger was stored.");
+      });
 });

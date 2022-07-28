@@ -22,7 +22,7 @@ contract FlightSuretyData {
     mapping(address => Airline) private airlines;                    // List of registered airlines
     address[] private airlinesAddresses;                            // List of airlines addresses
     mapping(address => Passenger) private passengers;                // List of passengers
-    address[] private paxs;                            // List of passengers addresses
+    address[] public paxs;                            // List of passengers addresses
 
     struct Airline {
         string name;
@@ -249,6 +249,17 @@ contract FlightSuretyData {
                         returns (uint256) 
     {
         return airlinesAddresses.length;
+    }
+    
+    /**
+    * @dev Return pax address
+    */    
+    function getPax (uint256 index)
+                        external
+                        view
+                        returns (address) 
+    {
+        return paxs[index];
     }
     
     /********************************************************************************************/
