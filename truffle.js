@@ -1,17 +1,14 @@
 var HDWalletProvider = require("@truffle/hdwallet-provider");
-var mnemonic = "random girl affair wheel mystery repeat actual citizen pet ticket tourist bid";
+var mnemonic = "";
 
 module.exports = {
   networks: {
-    development: {
-      provider: function() {
-        return new HDWalletProvider({
-              mnemonic: mnemonic, 
-              providerOrUrl: "http://127.0.0.1:9545/", 
-              numberOfAddresses: 10});
-      },
-      network_id: '*',
-      gas: 9999999
+    develop: {
+        port: 9545,
+        network_id: 20,
+        accounts: 30,
+        defaultEtherBalance: 100,
+        blockTime: 1
     }
   },
   compilers: {

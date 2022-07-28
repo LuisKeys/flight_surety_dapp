@@ -11,6 +11,10 @@ contract('Flight Surety Tests', async (accounts) => {
     await config.flightSuretyData.addAuthorizedCaller(config.flightSuretyApp.address, { from: accounts[0] });
   });
 
+  contract("Accounts to console for handy checks", async (accounts) => {
+    console.log(accounts)
+  });  
+
   /****************************************************************************************/
   /* Operations and Settings                                                              */
   /****************************************************************************************/
@@ -129,4 +133,17 @@ contract('Flight Surety Tests', async (accounts) => {
         let passenger = await config.flightSuretyData.getPax.call(0); 
         assert.equal(passenger, config.firstPassenger, "Passenger was stored.");
       });
+
+      it("Check oracles instantiation", async () => {
+        let fee = await config.flightSuretyApp.REGISTRATION_FEE.call();
+        const  baseAccount = 10;
+        const  oraclesCount = 5;
+        for(let i = baseAccount; i < (baseAccount + oraclesCount); i++) {      
+            console.log("Oracle account:" + accounts[i]);
+            await config.flightSuretyApp.registerOracle({ from: accounts[i], value: fee});
+            let result = await config.flightSuretyApp.getMyIndexes.call({ from: accounts[i]});
+            assert.equal(result.length, 3, 'Oracle must be registered with 3 unique numbers combination');
+        }
+      });
+    
 });
