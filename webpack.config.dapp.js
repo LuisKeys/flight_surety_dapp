@@ -1,6 +1,7 @@
 __webpack_base_uri__ = 'http://localhost:8000';
 const path = require("path");
 const HtmlWebpackPlugin = require("html-webpack-plugin");
+const webpack = require('webpack');
 
 module.exports = {
   entry: ['babel-polyfill', path.join(__dirname, "src/dapp")],
@@ -8,6 +9,7 @@ module.exports = {
     path: path.join(__dirname, "prod/dapp"),
     filename: "bundle.js"
   },
+  mode: 'development',
   module: {
     rules: [
     {
@@ -35,10 +37,30 @@ module.exports = {
   plugins: [
     new HtmlWebpackPlugin({ 
       template: path.join(__dirname, "src/dapp/index.html")
-    })
+    }),
+    new webpack.ProvidePlugin({
+      Buffer: ['buffer', 'Buffer']
+    }),
+    new webpack.ProvidePlugin({
+      process: 'process/browser',
+    })    
   ],
   resolve: {
-    extensions: [".js"]
+    extensions: [".js"],
+    fallback: { 
+      "os": require.resolve("os-browserify/browser"),
+      "https": require.resolve("https-browserify"),
+      "http": require.resolve("stream-http"),
+      "crypto": require.resolve("crypto-browserify"),
+      "buffer": require.resolve("buffer"),
+      "assert": require.resolve("assert/"),
+      "fs": false,
+      "tls": false,
+      "net": false,
+      "path": false,
+      "zlib": false,
+      "stream": false
+    }
   },
   devServer: {
     contentBase: path.join(__dirname, "dapp"),
