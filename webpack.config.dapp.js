@@ -1,3 +1,4 @@
+__webpack_base_uri__ = 'http://localhost:8000';
 const path = require("path");
 const HtmlWebpackPlugin = require("html-webpack-plugin");
 
