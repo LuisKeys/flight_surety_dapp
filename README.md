@@ -6,15 +6,19 @@ Ganache v7.2.0
 
 Solidity - ^0.4.24 (solc-js)
 
-Node v12.0.0
+
 
 Web3.js v1.7.4
+
+Node for:
+Truffle: v12.0.0
+Web App: v12.0.0
+Server: v10.24.1
 
 To install packages the following commands were required since NPM got stuck in oboe package, and verbose was used to diagnose any issue during the installation:
 
 npm i oboe@2.1.3
 npm install --verbose
-
 
 FlightSurety is a sample application project for Udacity's Blockchain course.
 

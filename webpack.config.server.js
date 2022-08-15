@@ -2,6 +2,7 @@ const webpack = require('webpack')
 const path = require('path')
 const nodeExternals = require('webpack-node-externals')
 const StartServerPlugin = require('start-server-webpack-plugin')
+const dirname = path.resolve();
 
 module.exports = {
     entry: [
@@ -11,7 +12,7 @@ module.exports = {
     watch: true,
     target: 'node',
     externals: [nodeExternals({
-        whitelist: ['webpack/hot/poll?1000']
+        allowlist: ['webpack/hot/poll?1000']
     })],
     module: {
         rules: [{
@@ -22,7 +23,6 @@ module.exports = {
     },
     plugins: [
         new StartServerPlugin('server.js'),
-        new webpack.NamedModulesPlugin(),
         new webpack.HotModuleReplacementPlugin(),
         new webpack.NoEmitOnErrorsPlugin(),
         new webpack.DefinePlugin({
@@ -32,7 +32,10 @@ module.exports = {
         }),
     ],
     output: {
-        path: path.join(__dirname, 'prod/server'),
+        path: path.join(dirname, 'prod/server'),
         filename: 'server.js'
+    },
+    optimization: {
+        moduleIds: 'named'
     }
 }
