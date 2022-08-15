@@ -16,53 +16,28 @@ $(document).ready(function(){
        
         DOM.elid('FunSeedAirlines').value = contract.owner;
         DOM.elid('sel-airline').value = 'Fun Seed Airlines';
-        DOM.elid('selected-airline-address').value = contract.owner;
+        //DOM.elid('selected-airline-address').value = contract.owner;
 
         contract.isOperational((error, result) => {
             display('DAPP logs', 'Check if contract is operational', [ { label: 'Operational Status', error: error, value: result} ]);
         });
     
-
-        DOM.elid('submit-oracle').addEventListener('click', async () => {
-            let flight = DOM.elid('flight').value;
-            let selectedAirlineAddress = DOM.elid('selected-airline-address').value;
+        DOM.elid('airlineSelector').addEventListener('click', (e) => {
+            e.preventDefault();
+            console.log("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
+            //DOM.elid("sel-airline").value = e.innerHTML;
+            //DOM.elid("airline-address").value = e.value;
         })
 
-        // User-submitted transaction
-        DOM.elid('fund').addEventListener('click', async() => {
-            let funds = DOM.elid('funds').value;
-            // Write transaction
-            contract.fund(funds, (error, result) => {
-                display('', `Funds added`, [ { label: 'Funds added to airline: ', error: error, value: result.funds+" wei"} ]);
-                display('', '', [ { label: 'Airline is active: ', value: result.active} ]);
-            });
-        })
-
-        // User-submitted transaction
-        DOM.elid('register-flight').addEventListener('click', async() => {
-            let flight = DOM.elid('new-flight-number').value;
-            let destination = DOM.elid('new-flight-destination').value;
-            
-            // Write transaction
-            contract.registerFlight(flight, destination, (error, result) => {
-                display('', 'Register new flight', [ { label: 'Info:', error: error, value: 'Flight code: '+result.flight + ' Destination: ' + result.destination} ]);
-                if (!error) {
-                    flightDisplay(flight, destination, result.address, result.timestamp);
-                }
-            });
-        })
-
-        // User-submitted transaction
         DOM.elid('buy-insurance').addEventListener('click', () => {
-            let flight = DOM.elid('insurance-flight').value;
-            let price = DOM.elid('insurance-price').value;
+            let flight = DOM.elid('flight').value;
+            let price = DOM.elid('price').value;
             // Write transaction
             contract.buy(flight, price, (error, result) => {
-                display('', 'Bought a new flight insurance', [ { label: 'Insurance info', error: error, value: `Flight: ${result.flight}. Paid: ${result.price} wei. Passenger: ${result.passenger}`} ]);
+                
             });
         })
 
-        // User-submitted transaction
         DOM.elid('check-credit').addEventListener('click', () => {
             // Write transaction
             contract.getCreditToPay((error, result) => {
@@ -91,32 +66,14 @@ $(document).ready(function(){
                 }
             });
         })
-
-        DOM.elid('airlineDropdownOptions').addEventListener('click', (e) => {
-            e.preventDefault();
-            
-            DOM.elid("sel-airline").value = e.srcElement.innerHTML;
-            DOM.elid("selected-airline-address").value = e.srcElement.value;
-        })
     });
 
-    DOM.elid('submit-oracle').addEventListener('click', async () => {
+    DOM.elid('check-status').addEventListener('click', async () => {
         let flight = DOM.elid('flight').value;
-        let selectedAirlineAddress = DOM.elid('selected-airline-address').value;
+        let selectedAirlineAddress = DOM.elid('airline-address').value;
         
-        // Write transaction
         contract.fetchFlightStatus(selectedAirlineAddress, flight, (error, result) => {
-            display('', 'Trigger oracles', [ { label: 'Fetch Flight Status', error: error, value: result.flight + ' ' + getTimeFromTimestamp(result.timestamp)} ]);
             let newTime = result.timestamp;
-            displaySpinner();
-            setTimeout(() => {
-                contract.viewFlightStatus(selectedAirlineAddress, flight, (error, result) => {
-                    if (!error) {
-                        changeFlightStatus(flight, result, newTime);
-                    }
-                });
-                hideSpinner();
-            }, 2000);
         });
     })
 

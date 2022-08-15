@@ -29,7 +29,7 @@
 
             <div class="dropdown">
                 <br>
-                <button class="btn btn-primary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                <button class="btn btn-primary dropdown-toggle" type="button" id="dropdown" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                     Select an airline
                 </button>
                 <div class="dropdown-menu" id="airlineSelector">
@@ -40,13 +40,17 @@
                 </div>
              </div>
   
-             <div class="form-group col-md-3">
+             <div class="form-group col-md-2">
                 <label>Selected Ariline</label>
-                <input type="text" class="form-control" id="insurance-flight" onkeyup="this.value = this.value.toUpperCase();">
+                <input type="text" class="form-control" id="sel-airline">
+              </div>
+              <div class="form-group col-md-4">
+                <label>Ariline address</label>
+                <input type="text" class="form-control" id="airline-address">
               </div>
               <div class="form-group col-md-2">
                 <label>Flight number</label>
-                <input type="text" class="form-control" id="insurance-flight" onkeyup="this.value = this.value.toUpperCase();">
+                <input type="text" class="form-control" id="flight">
               </div>
               <div class="form-group col-md-3">
                 <label>Insurance payment</label>
@@ -54,7 +58,7 @@
                   <div class="input-group-prepend">
                       <div class="input-group-text">ETH</div>
                   </div>
-                  <input type="text" class="form-control" id="insurance-price">
+                  <input type="text" class="form-control" id="price">
                 </div>
               </div>
             </div>
