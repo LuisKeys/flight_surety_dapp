@@ -34,10 +34,8 @@ export default class Contract {
     }
 
     isOperational(callback) {
-       let self = this;
-       self.flightSuretyApp.methods
-            .isOperational()
-            .call({ from: self.owner}, callback);
+        let self = this;
+        self.flightSuretyApp.isOperational().call({ from: self.owner}, callback);
     }
 
     fetchFlightStatus(flight, callback) {
