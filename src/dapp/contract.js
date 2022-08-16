@@ -12,12 +12,14 @@ export default class Contract {
         this.owner = null;
         this.airlines = [];
         this.passengers = [];
+        this.accounts = [];
     }
 
     initialize(callback) {
         this.web3.eth.getAccounts((error, accts) => {
            
             this.owner = accts[0];
+            this.accounts = accts;
 
             let counter = 1;
             
@@ -33,9 +35,9 @@ export default class Contract {
         });
     }
 
-    isOperational(callback) {
-        let self = this;
-        self.flightSuretyApp.isOperational().call({ from: self.owner}, callback);
+    async isOperational(callback) {
+        let self = this;        
+        self.flightSuretyApp.methods.isOperational.call({ from: self.owner}, callback);
     }
 
     fetchFlightStatus(flight, callback) {
