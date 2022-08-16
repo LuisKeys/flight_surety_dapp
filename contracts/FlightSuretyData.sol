@@ -262,6 +262,14 @@ contract FlightSuretyData {
         return paxs[index];
     }
     
+    /**
+    * @dev Return pax credit if any
+    */    
+    function getPaxCredit() external view returns (uint256) {
+        return passengers[msg.sender].credit;
+    }
+    /**
+
     /********************************************************************************************/
     /*                                     SMART CONTRACT FUNCTIONS                             */
     /********************************************************************************************/
@@ -416,7 +424,6 @@ contract FlightSuretyData {
     {
         fund();
     }
-
 
 }
 

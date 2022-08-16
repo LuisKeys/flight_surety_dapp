@@ -41,6 +41,37 @@ $(document).ready(function(){
             });
         })        
 
+        DOM.elid('buy-insurance').addEventListener('click', () => {
+            let flight = DOM.elid('flight').value;
+            let price = DOM.elid('price').value;
+            contract.buyInsurance(flight, price, (error, result) => {
+                message('Action:', 'Buy flight insurance:', [ { label: 'Insurance:', error: error, value: `Passenger: ${result.passenger} - Flight: ${result.flight} - Paid: ${result.price} wei.`} ]);
+            });
+        })
+
+        DOM.elid('check-credit').addEventListener('click', () => {
+            contract.getCredit((error, result) => {
+                if(error){
+                    message('Action:', 'Check credit:', [ { label: 'Error:', error: error, value: `Passenger: ${contract.accounts[8]}`} ]);
+                } else {
+                    let credit = DOM.elid("credit");
+                    credit.value = result + " wei";
+                }
+            });
+        })
+
+        DOM.elid('request-credit').addEventListener('click', () => {
+            contract.withdraw((error, result) => {
+                if(error){
+                    message('Action:', 'Request credit:', [ { label: 'Error:', error: error, value: `Passenger: ${contract.accounts[8]}`} ]);
+                } else {
+                    let credit = DOM.elid("credit");
+                    message('Action:', 'Requested credit:', [ { label: 'Success:', error: error, value: `Passenger: ${contract.accounts[8]} - Amount: ${credit.value}`} ]);
+                    credit.value = "0";
+                }
+            });
+        })        
+
     });
 
 })();
