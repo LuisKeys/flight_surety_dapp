@@ -378,12 +378,24 @@ contract FlightSuretyData {
      *  @dev Transfers eligible payout funds to insuree
      *
     */
-    function pay
+    function withdraw
                             (
+                                address passenger
                             )
-                            external
-                            pure
+                            public
+                            payable
+                            requireIsOperational
+                            returns (uint256, uint256, uint256, uint256, address, address)
     {
+        require(passenger == tx.origin, "No contracts");
+        require(passengers[passenger].credit > 0, "Passenger has no credit");
+        uint256 credit = passengers[passenger].credit;
+        uint256 balance = address(this).balance;
+        require(address(this).balance > credit, "Insufficient funds");
+        passengers[passenger].credit = 0;
+        passenger.transfer(credit);
+        uint256 finalCredit = passengers[passenger].credit;
+        return (balance, credit, address(this).balance, finalCredit, passenger, address(this));
     }
 
    /**

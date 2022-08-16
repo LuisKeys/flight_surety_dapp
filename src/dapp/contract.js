@@ -98,7 +98,7 @@ export default class Contract {
         let self = this;
         //First passenger - hardcoded
         let passenger = this.accounts[8];
-        self.flightSuretyData.methods.pay(self.accounts[0]).send({ from: passenger}, (error, result) => {
+        self.flightSuretyData.methods.withdraw(self.accounts[0]).send({ from: passenger}, (error, result) => {
             callback(error, result);
         });
     }    
