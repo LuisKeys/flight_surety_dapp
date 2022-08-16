@@ -237,6 +237,19 @@ contract FlightSuretyApp {
         emit OracleRequest(index, airline, flight, timestamp);
     } 
 
+    function viewFlightStatus
+                            (
+                                string flight,
+                                address airline
+                            )
+                            external
+                            view
+                            returns(uint8)
+    {
+            bytes32 key = keccak256(abi.encodePacked(flight, airline));
+            return flights[key].statusCode;
+    }
+
 
 // region ORACLE MANAGEMENT
 
