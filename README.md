@@ -29,6 +29,57 @@ Once node packages are installed, to execute the Dapp the following steps are re
 10. In the Web app operate the buttons and values from top to bottom flow.
 
 The following are screen shots of my local environment consoles and Web app:
+## Truffle dev environment:
+
+![truffle dev environment](images/0.png)
+
+## Contracts migrated to local network with their addresses:
+
+![Contracts migrated to local network with their addresses](images/1.png)
+
+## Tests results:
+
+![Tests results](images/2.png)
+
+## Dapp webpack complilation and execution, listening on por 8000:
+
+![Dapp webpack complilation and execution, listening on por 8000](images/3.png)
+
+## Server execution with tradicional node since webpack produced issues:
+
+![Server execution with tradicional node since webpack produced issues](images/4.png)
+
+## Web app UI:
+
+![Web app ui](images/5.png)
+
+## Airline selection:
+
+![Airline selection](images/6.png)
+
+## Airline selected:
+
+![Airline selected](images/7.png)
+## Buy insurace:
+
+![Buy insurac](images/8.png)
+
+## Check and claim credit:
+
+![Check and claim credit](images/9.png)
+## Change flight status for oracles:
+
+![Change flight status for oracles](images/10.png)
+
+
+
+
+
+
+
+
+
+
 
 
 FlightSurety is a sample application project for Udacity's Blockchain course.

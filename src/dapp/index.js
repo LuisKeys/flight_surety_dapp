@@ -1,23 +1,23 @@
-
+//Imports
 import DOM from './dom';
 import Contract from './contract';
 import './flightsurety.css';
-
-$(document).ready(function(){
-    $('[data-toggle="tooltip"]').tooltip().mouseover();
-    setTimeout(function(){ $('[data-toggle="tooltip"]').tooltip('hide'); }, 3000);
-});
 
 (async() => {
 
     let result = null;
 
+    /*
+    ********************* Contract instancec ******************************
+    */
     let contract = new Contract('localhost', () => {
 
+        //Check and display a message with the contract operational status
         contract.isOperational((error, result) => {
             message('Message', 'Is contract operational?', [ { label: 'Operational Status:', error: error, value: result} ]);
         });
 
+        //Bind a listener to the airline selector dropdown
         DOM.elid('airlineSelector').addEventListener('click', (e) => {
             e.preventDefault();
             
@@ -26,6 +26,7 @@ $(document).ready(function(){
             DOM.elid("airline-address").value = contract.accounts[e.srcElement.value] ;
         })
 
+        //Bind a listener to the check flight status button
         DOM.elid('check-status').addEventListener('click', async (e) => {
             let flight = DOM.elid('flight').value;
             let airlineAddress = DOM.elid('airline-address').value;    
@@ -42,6 +43,7 @@ $(document).ready(function(){
             })
         })
 
+        //Bind a listener to the set flight status buttons which calls the server API single endpoint 
         DOM.elid('set-status').addEventListener('click', async(e) => {
             e.preventDefault();
             let value = e.srcElement.value;
@@ -51,6 +53,7 @@ $(document).ready(function(){
             message('Action:', 'Changed flight status for oracles', [ { label: 'Status:', error: null, value: jResponse.message} ]);
         })
 
+        //Bind a listener to the buy insurance buttons
         DOM.elid('buy-insurance').addEventListener('click', () => {
             let flight = DOM.elid('flight').value;
             let price = DOM.elid('price').value;
@@ -59,6 +62,7 @@ $(document).ready(function(){
             });
         })
 
+        //Bind a listener to the check credit buttons
         DOM.elid('check-credit').addEventListener('click', () => {
             contract.getCredit((error, result) => {
                 if(error){
@@ -70,6 +74,7 @@ $(document).ready(function(){
             });
         })
 
+        //Bind a listener to the request credit buttons
         DOM.elid('request-credit').addEventListener('click', () => {
             contract.withdraw((error, result) => {
                 if(error){
@@ -86,6 +91,11 @@ $(document).ready(function(){
 
 })();
 
+/*
+********************* Util functions ******************************
+*/
+
+//Util message function
 function message(title, description, results) {
     let displayDiv = DOM.elid("messages");
     let section = DOM.section();
@@ -102,6 +112,7 @@ function message(title, description, results) {
     displayDiv.append(section);
 }
 
+//Util time function
 function getTimeFromTimestamp(timestamp) {
     return new Date(timestamp * 1000).toLocaleTimeString("es-ES").slice(0, -3);
 }
