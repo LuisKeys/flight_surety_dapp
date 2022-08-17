@@ -40,15 +40,15 @@ $(document).ready(function(){
                     });
             }, 3000);
             })
-                            
-            /*
+        })
+
+        DOM.elid('set-status').addEventListener('click', async(e) => {
             e.preventDefault();
             let value = e.srcElement.value;
-            const response = await fetch(`http://localhost:3000/api/status/${value}`);
+            const response = await fetch(`http://localhost:3000/api/status?status=${value}`);
             const jResponse = await response.json();
             console.log(jResponse);
-            message('', 'Query oracles', [ { label: 'Flight Status:', error: error, value: jResponse.message} ]);
-            */
+            message('Action:', 'Changed flight status for oracles', [ { label: 'Status:', error: null, value: jResponse.message} ]);
         })
 
         DOM.elid('buy-insurance').addEventListener('click', () => {

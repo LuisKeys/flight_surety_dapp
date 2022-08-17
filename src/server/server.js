@@ -3,6 +3,7 @@ const Web3 = require("web3");
 const express = require("express");
 const FlightSuretyData = require("../../build/contracts/FlightSuretyData.json");
 const FlightSuretyApp = require("../../build/contracts/FlightSuretyApp.json");
+const cors = require('cors');
 
 let config = Config["localhost"];
 let web3 = new Web3(
@@ -33,6 +34,7 @@ let oracles = [];
 let ixs = [];
 
 const app = express();
+app.use(cors());
 
 app.get("/api", (req, res) => {
   res.send({
