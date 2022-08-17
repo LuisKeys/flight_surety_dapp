@@ -28,17 +28,18 @@ $(document).ready(function(){
 
         DOM.elid('check-status').addEventListener('click', async (e) => {
             let flight = DOM.elid('flight').value;
-            let airlineAddress = DOM.elid('airline-address').value;            
-            /*
-            let timestamp = Math.floor(Date.now() / 1000); //convert ms to seconds
+            let airlineAddress = DOM.elid('airline-address').value;    
+            console.log(airlineAddress);
+            let timestamp = Math.floor(Date.now() / 1000);
             contract.fetchFlightStatus(flight, (error, result) => {
-                message('', 'Query oracles', [ { label: 'Flight Status:', error: error, value: result.flight + ' ' + getTimeFromTimestamp(result.timestamp)} ]);
+                message('Action:', 'Query oracles', [ { label: 'Flight Status 1:', error: error, value: result.flight + ' ' + getTimeFromTimestamp(result.timestamp)} ]);
                 let time = result.timestamp;
                 setTimeout(() => {
                     contract.viewFlightStatus(airlineAddress, flight, (error, result) => {
+                        message('Action:', 'Query oracles', [ { label: 'Flight Status 2:', error: error, value: result}]);
                     });
             }, 3000);
-            */
+            })
                             
             /*
             e.preventDefault();
