@@ -26,10 +26,10 @@ $(document).ready(function(){
             DOM.elid("airline-address").value = contract.accounts[e.srcElement.value] ;
         })
 
-        DOM.elid('check-status').addEventListener('click', async () => {
+        DOM.elid('check-status').addEventListener('click', async (e) => {
             let flight = DOM.elid('flight').value;
             let airlineAddress = DOM.elid('airline-address').value;            
-            
+            /*
             let timestamp = Math.floor(Date.now() / 1000); //convert ms to seconds
             contract.fetchFlightStatus(flight, (error, result) => {
                 message('', 'Query oracles', [ { label: 'Flight Status:', error: error, value: result.flight + ' ' + getTimeFromTimestamp(result.timestamp)} ]);
@@ -37,9 +37,18 @@ $(document).ready(function(){
                 setTimeout(() => {
                     contract.viewFlightStatus(airlineAddress, flight, (error, result) => {
                     });
-                }, 3000);
-            });
-        })        
+            }, 3000);
+            */
+                            
+            /*
+            e.preventDefault();
+            let value = e.srcElement.value;
+            const response = await fetch(`http://localhost:3000/api/status/${value}`);
+            const jResponse = await response.json();
+            console.log(jResponse);
+            message('', 'Query oracles', [ { label: 'Flight Status:', error: error, value: jResponse.message} ]);
+            */
+        })
 
         DOM.elid('buy-insurance').addEventListener('click', () => {
             let flight = DOM.elid('flight').value;

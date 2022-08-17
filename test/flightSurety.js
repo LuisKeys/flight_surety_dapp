@@ -137,7 +137,7 @@ contract('Flight Surety Tests', async (accounts) => {
       it("Check oracles instantiation", async () => {
         let fee = await config.flightSuretyApp.REGISTRATION_FEE.call();
         const  baseAccount = 10;
-        const  oraclesCount = 5;
+        const  oraclesCount = 22;
         for(let i = baseAccount; i < (baseAccount + oraclesCount); i++) {      
             console.log("Oracle account:" + accounts[i]);
             await config.flightSuretyApp.registerOracle({ from: accounts[i], value: fee});

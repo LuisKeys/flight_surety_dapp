@@ -6,19 +6,30 @@ Ganache v7.2.0
 
 Solidity - ^0.4.24 (solc-js)
 
-
-
 Web3.js v1.7.4
 
-Node for:
-Truffle: v12.0.0
-Web App: v12.0.0
-Server: v10.24.1
+Node v12.0.0
 
 To install packages the following commands were required since NPM got stuck in oboe package, and verbose was used to diagnose any issue during the installation:
 
 npm i oboe@2.1.3
 npm install --verbose
+
+Once node packages are installed, to execute the Dapp the following steps are required:
+
+1. run truffle develop to create the development local blockchain environment.
+2. Replace the accounts and security phrase in flightSurety.js.
+3. Compile the contracts with 'compile' command.
+4. Publish the contracts with 'migrate --reset'.
+5. Execute tests, which also initialize state with 'test'.
+6. Open a new terminal and execute 'npm run dapp'.
+7. Open Metamask and import accounts 0, 1 and 8 to review balances and track    transactions.
+8. Browse the Dapp web app at 'http://localhost:8000/'.
+9. Open a third terminal and execute 'npm run server'.
+10. In the Web app operate the buttons and values from top to bottom flow.
+
+The following are screen shots of my local environment consoles and Web app:
+
 
 FlightSurety is a sample application project for Udacity's Blockchain course.
 
